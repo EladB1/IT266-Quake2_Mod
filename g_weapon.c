@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-
+static void Grenade_Explode(edict_t *ent);
 /*
 =================
 check_dodge
@@ -351,8 +351,8 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	bolt->s.sound = gi.soundindex ("misc/lasfly.wav");
 	bolt->owner = self;
 	bolt->touch = blaster_touch;
-	bolt->nextthink = level.time + 2;
-	bolt->think = G_FreeEdict;
+	bolt->nextthink = level.time + 1;
+	bolt->think = Grenade_Explode; //G_FreeEdict;
 	bolt->dmg = damage;
 	bolt->classname = "bolt";
 	if (hyper)
