@@ -880,6 +880,26 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 				effect = EF_HYPERBLASTER;
 			else
 				effect = 0;
+			//mod
+			rotation = (ent->client->ps.gunframe - 5) * 2 * M_PI / 6; //make sure the bolts are spread out
+			offset[0] = 0;
+			offset[1] = -8 * sin(rotation);
+			offset[2] = 8 * cos(rotation);
+			Blaster_Fire(ent, offset, 20, true, effect);
+
+			rotation = (ent->client->ps.gunframe - 5) * 2 * M_PI / 6 + M_PI * -4.0 / 3.0; //fire second bolt from different angle
+			offset[0] = 0;
+			offset[1] = -8 * sin(rotation);
+			offset[2] = 8 * cos(rotation);
+			Blaster_Fire(ent, offset, 20, true, effect);
+
+			rotation = (ent->client->ps.gunframe - 5) * 2 * M_PI / 6 + M_PI * 4.0 / 3.0;
+			offset[0] = 0;
+			offset[1] = -8 * sin(rotation);
+			offset[2] = 8 * cos(rotation);
+			Blaster_Fire(ent, offset, 20, true, effect);
+			
+			//end of mod
 			if (deathmatch->value)
 				damage = 15;
 			else
