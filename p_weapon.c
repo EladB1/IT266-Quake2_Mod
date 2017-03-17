@@ -828,7 +828,6 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 void Weapon_Blaster_Fire (edict_t *ent)
 {
 	int		damage;
-
 	if (deathmatch->value)
 		damage = 15;
 	else
