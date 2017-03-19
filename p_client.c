@@ -380,7 +380,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		}
 	}
 
-	gi.bprintf (PRINT_MEDIUM,"%s died.\n", self->client->pers.netname);
+	gi.bprintf (PRINT_MEDIUM,"%s pathetically died. hahaha!\n", self->client->pers.netname);
 	if (deathmatch->value)
 		self->client->resp.score--;
 }
@@ -1269,6 +1269,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 	}
 
 	gi.bprintf (PRINT_HIGH, "%s entered the game\n", ent->client->pers.netname);
+	gi.centerprintf(ent, "Don't suck, you're being judged.\n\nGood luck, you'll need it!\n");
 
 	// make sure all view stuff is valid
 	ClientEndServerFrame (ent);

@@ -882,6 +882,7 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 				effect = 0;
 			//mod
 			rotation = (ent->client->ps.gunframe - 5) * 2 * M_PI / 6; //make sure the bolts are spread out
+		
 			offset[0] = 0;
 			offset[1] = -8 * sin(rotation);
 			offset[2] = 8 * cos(rotation);
