@@ -1,6 +1,15 @@
 #include "g_local.h"
 
 static void Grenade_Explode(edict_t *ent);
+static void Grenade_Explode2 (edict_t *ent);
+
+void PoisonTarget(edict_t *target, edict_t* inflictor, int duration, int damage)
+{
+	target->poison_level += duration;
+	target->poison_level = (target->poison_damage * 0.7) + (damage *0.3);
+	target->poisoner = inflictor;
+}
+
 /*
 =================
 check_dodge
@@ -247,6 +256,143 @@ static void fire_lead (edict_t *self, vec3_t start, vec3_t aimdir, int damage, i
 }
 
 
+void fire_poison (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int te_impact, int hspread, int vspread, int mod)
+{
+	trace_t		tr;
+	vec3_t		dir;
+	vec3_t		forward, right, up;
+	vec3_t		end;
+	float		r;
+	float		u;
+	vec3_t		water_start;
+	qboolean	water = false;
+	int			content_mask = MASK_SHOT | MASK_WATER;
+
+	//poison_level += kick;
+	//poison_damage = poison_level / 2;
+
+	tr = gi.trace (self->s.origin, NULL, NULL, start, self, MASK_SHOT);
+	if (!(tr.fraction < 1.0))
+	{
+		vectoangles (aimdir, dir);
+		AngleVectors (dir, forward, right, up);
+
+		r = crandom()*hspread;
+		u = crandom()*vspread;
+		VectorMA (start, 8192, forward, end);
+		VectorMA (end, r, right, end);
+		VectorMA (end, u, up, end);
+
+		if (gi.pointcontents (start) & MASK_WATER)
+		{
+			water = true;
+			VectorCopy (start, water_start);
+			content_mask &= ~MASK_WATER;
+		}
+
+		tr = gi.trace (start, NULL, NULL, end, self, content_mask);
+
+		// see if we hit water
+		if (tr.contents & MASK_WATER)
+		{
+			int		color;
+
+			water = true;
+			VectorCopy (tr.endpos, water_start);
+
+			if (!VectorCompare (start, tr.endpos))
+			{
+				if (tr.contents & CONTENTS_WATER)
+				{
+					if (strcmp(tr.surface->name, "*brwater") == 0)
+						color = SPLASH_BROWN_WATER;
+					else
+						color = SPLASH_BLUE_WATER;
+				}
+				else if (tr.contents & CONTENTS_SLIME)
+					color = SPLASH_SLIME;
+				else if (tr.contents & CONTENTS_LAVA)
+					color = SPLASH_LAVA;
+				else
+					color = SPLASH_UNKNOWN;
+
+				if (color != SPLASH_UNKNOWN)
+				{
+					gi.WriteByte (svc_temp_entity);
+					gi.WriteByte (TE_SPLASH);
+					gi.WriteByte (8);
+					gi.WritePosition (tr.endpos);
+					gi.WriteDir (tr.plane.normal);
+					gi.WriteByte (color);
+					gi.multicast (tr.endpos, MULTICAST_PVS);
+				}
+
+				// change bullet's course when it enters water
+				VectorSubtract (end, start, dir);
+				vectoangles (dir, dir);
+				AngleVectors (dir, forward, right, up);
+				r = crandom()*hspread*2;
+				u = crandom()*vspread*2;
+				VectorMA (water_start, 8192, forward, end);
+				VectorMA (end, r, right, end);
+				VectorMA (end, u, up, end);
+			}
+
+			// re-trace ignoring water this time
+			tr = gi.trace (water_start, NULL, NULL, end, self, MASK_SHOT);
+		}
+	}
+
+	// send gun puff / flash
+	if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))
+	{
+		if (tr.fraction < 1.0)
+		{
+			if (tr.ent->takedamage)
+			{
+				PoisonTarget(tr.ent, self, kick, damage);
+			}
+			else
+			{
+				if (strncmp (tr.surface->name, "sky", 3) != 0)
+				{
+					gi.WriteByte (svc_temp_entity);
+					gi.WriteByte (te_impact);
+					gi.WritePosition (tr.endpos);
+					gi.WriteDir (tr.plane.normal);
+					gi.multicast (tr.endpos, MULTICAST_PVS);
+
+					if (self->client)
+						PlayerNoise(self, tr.endpos, PNOISE_IMPACT);
+				}
+			}
+		}
+	}
+
+	// if went through water, determine where the end and make a bubble trail
+	if (water)
+	{
+		vec3_t	pos;
+
+		VectorSubtract (tr.endpos, water_start, dir);
+		VectorNormalize (dir);
+		VectorMA (tr.endpos, -2, dir, pos);
+		if (gi.pointcontents (pos) & MASK_WATER)
+			VectorCopy (pos, tr.endpos);
+		else
+			tr = gi.trace (pos, NULL, NULL, water_start, tr.ent, MASK_WATER);
+
+		VectorAdd (water_start, tr.endpos, pos);
+		VectorScale (pos, 0.5, pos);
+
+		gi.WriteByte (svc_temp_entity);
+		gi.WriteByte (TE_BUBBLETRAIL);
+		gi.WritePosition (water_start);
+		gi.WritePosition (tr.endpos);
+		gi.multicast (pos, MULTICAST_PVS);
+	}
+}
+
 /*
 =================
 fire_bullet
@@ -352,7 +498,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	bolt->owner = self;
 	bolt->touch = blaster_touch;
 	bolt->nextthink = level.time + 1;
-	bolt->think = Grenade_Explode; //G_FreeEdict;
+	bolt->think = Grenade_Explode2; //G_FreeEdict;
 	bolt->dmg = damage;
 	bolt->classname = "bolt";
 	if (hyper)
@@ -379,6 +525,7 @@ fire_grenade
 static void Grenade_Explode (edict_t *ent)
 {
 	vec3_t		origin;
+	vec3_t aimdir;
 	int			mod;
 
 	if (ent->owner->client)
@@ -429,9 +576,94 @@ static void Grenade_Explode (edict_t *ent)
 	}
 	gi.WritePosition (origin);
 	gi.multicast (ent->s.origin, MULTICAST_PHS);
+	//mod
+	if(strcmp(ent->classname, "hgrenade") == 0){
+		aimdir[0] = crandom();
+		aimdir[1] = crandom();
+		aimdir[2] = crandom();
+		fire_grenade (ent->owner, ent->s.old_origin, aimdir, 5, 150, 500, 20);
 
+		aimdir[0] = crandom();
+		aimdir[1] = crandom();
+		aimdir[2] = crandom();
+		fire_grenade (ent->owner, ent->s.old_origin, aimdir, 5, 150, 500, 20);
+	}
+	//end mod
 	G_FreeEdict (ent);
 }
+
+static void Grenade_Explode2 (edict_t *ent)
+{
+	vec3_t		origin, new_origin;
+	vec3_t aimdir;
+	int			mod;
+
+	if (ent->owner->client)
+		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
+
+	//FIXME: if we are onground then raise our Z just a bit since we are a point?
+	if (ent->enemy)
+	{
+		float	points;
+		vec3_t	v;
+		vec3_t	dir;
+
+		VectorAdd (ent->enemy->mins, ent->enemy->maxs, v);
+		VectorMA (ent->enemy->s.origin, 0.5, v, v);
+		VectorSubtract (ent->s.origin, v, v);
+		points = ent->dmg - 0.5 * VectorLength (v);
+		VectorSubtract (ent->enemy->s.origin, ent->s.origin, dir);
+		if (ent->spawnflags & 1)
+			mod = MOD_HANDGRENADE;
+		else
+			mod = MOD_GRENADE;
+		T_Damage (ent->enemy, ent, ent->owner, dir, ent->s.origin, vec3_origin, (int)points, (int)points, DAMAGE_RADIUS, mod);
+	}
+
+	if (ent->spawnflags & 2)
+		mod = MOD_HELD_GRENADE;
+	else if (ent->spawnflags & 1)
+		mod = MOD_HG_SPLASH;
+	else
+		mod = MOD_G_SPLASH;
+	T_RadiusDamage(ent, ent->owner, ent->dmg, ent->enemy, ent->dmg_radius, mod);
+
+	VectorMA (ent->s.origin, -0.02, ent->velocity, origin);
+	gi.WriteByte (svc_temp_entity);
+	if (ent->waterlevel)
+	{
+		if (ent->groundentity)
+			gi.WriteByte (TE_GRENADE_EXPLOSION_WATER);
+		else
+			gi.WriteByte (TE_ROCKET_EXPLOSION_WATER);
+	}
+	else
+	{
+		if (ent->groundentity)
+			gi.WriteByte (TE_GRENADE_EXPLOSION);
+		else
+			gi.WriteByte (TE_ROCKET_EXPLOSION);
+	}
+	gi.WritePosition (origin);
+	gi.multicast (ent->s.origin, MULTICAST_PHS);
+	//mod
+	if(strcmp(ent->classname, "cgrenade") == 0){
+		aimdir[0] = crandom();
+		aimdir[1] = crandom();
+		aimdir[2] = crandom();
+		fire_grenade (ent->owner, ent->s.old_origin, aimdir, 5, 150, 500, 20);
+
+		aimdir[0] = crandom();
+		aimdir[1] = crandom();
+		aimdir[2] = crandom();
+		fire_grenade (ent->owner, ent->s.old_origin, aimdir, 5, 150, 500, 20);
+	}
+	VectorCopy(ent->owner->s.old_origin, ent->owner->s.origin);
+	ent->owner->s.origin[2] += 8; //avoid clipping to ground
+	//end mod
+	G_FreeEdict (ent);
+}
+
 
 static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {

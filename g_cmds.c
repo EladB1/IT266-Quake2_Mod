@@ -880,6 +880,15 @@ void Cmd_PlayerList_f(edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
 }
 
+//mod
+void Cmd_Ammo_Toggle(edict_t *self)
+{
+	if (!self) return;
+	if(self->ammo_toggle)self->ammo_toggle = 0;
+	else self->ammo_toggle = 1;
+
+	gi.centerprintf(self, "Using ammo %s\n", (self->ammo_toggle)?"Tele Grenades":"Cluster Grenades");
+}
 
 /*
 =================
@@ -928,6 +937,10 @@ void ClientCommand (edict_t *ent)
 		Cmd_Use_f (ent);
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);
+	//mod
+	else if (Q_stricmp (cmd, "toggle") == 0)
+		Cmd_Ammo_Toggle (ent);
+	//end mod
 	else if (Q_stricmp (cmd, "give") == 0)
 		Cmd_Give_f (ent);
 	else if (Q_stricmp (cmd, "god") == 0)

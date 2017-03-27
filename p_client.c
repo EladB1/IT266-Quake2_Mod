@@ -272,6 +272,9 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			case MOD_BFG_BLAST:
 				message = "should have used a smaller gun";
 				break;
+			case MOD_POISON:
+				message = "Someone overdosed on someone else's venom";
+				break;
 			default:
 				if (IsNeutral(self))
 					message = "killed itself";
@@ -1101,6 +1104,9 @@ void PutClientInServer (edict_t *ent)
 
 		resp = client->resp;
 		memcpy (userinfo, client->pers.userinfo, sizeof(userinfo));
+		ent->poisoner = NULL;
+		ent->poison_damage = 0;
+		ent->poison_level = 0;
 		InitClientPersistant (client);
 		ClientUserinfoChanged (ent, userinfo);
 	}
@@ -1565,6 +1571,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
+	vec3_t zero = {0, 0, 0};
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1732,6 +1739,21 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		other = g_edicts + i;
 		if (other->inuse && other->client->chase_target == ent)
 			UpdateChaseCam(other);
+	}
+
+	if (ent->poison_level > 0)
+	{
+		 if(ent->poison_step <= 0)
+		 {
+			 T_Damage(ent, ent->poisoner, ent->poisoner, zero, ent->s.origin, zero, ent->poison_damage, 0, 0, 0);
+			 ent->poison_level--;
+			 ent->poison_step = 10;
+		 }
+		 else
+		 {
+			ent->poison_step--;
+		 }
+
 	}
 }
 

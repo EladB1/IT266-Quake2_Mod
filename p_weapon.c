@@ -706,8 +706,14 @@ void weapon_grenadelauncher_fire (edict_t *ent)
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	fire_grenade (ent, start, forward, damage, 600, 2.5, radius);
-
+	if(ent->ammo_toggle)
+	{
+		fire_grenade (ent, start, forward, damage, 600, 2.5, radius);
+	}
+	else
+	{
+		fire_grenade2 (ent, start, forward, damage, 600, 2.5, radius, false);
+	}
 	gi.WriteByte (svc_muzzleflash);
 	gi.WriteShort (ent-g_edicts);
 	gi.WriteByte (MZ_GRENADE | is_silenced);
@@ -1057,9 +1063,9 @@ void Chaingun_Fire (edict_t *ent)
 	int			kick = 2;
 
 	if (deathmatch->value)
-		damage = 6;
+		damage = 3;
 	else
-		damage = 8;
+		damage = 3;
 
 	if (ent->client->ps.gunframe == 5)
 		gi.sound(ent, CHAN_AUTO, gi.soundindex("weapons/chngnu1a.wav"), 1, ATTN_IDLE, 0);
@@ -1149,7 +1155,7 @@ void Chaingun_Fire (edict_t *ent)
 		VectorSet(offset, 0, r, u + ent->viewheight-8);
 		P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
 
-		fire_bullet (ent, start, forward, damage, kick, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, MOD_CHAINGUN);
+		fire_poison (ent, start, forward, damage, 10, TE_SCREEN_SPARKS, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, MOD_CHAINGUN);
 	}
 
 	// send muzzle flash
