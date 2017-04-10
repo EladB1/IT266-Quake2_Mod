@@ -896,3 +896,44 @@ void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, f
 
 	gi.linkentity (bfg);
 }
+
+//mod: melee weapons
+void wrench(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod)
+{
+	vec3_t forward, right, up, dir, end;
+	trace_t tr;
+
+	tr = gi.trace(self->s.origin, NULL, NULL, start, self, MASK_SHOT); //line trace from player
+
+	if (!(tr.fraction) < 1.0)
+	{
+		vectoangles(aimdir, dir); //face the direction aiming in
+		AngleVectors(dir, forward, right, up);
+
+		//VectorNormalize(forward); //make the forward vector the unit vector
+		VectorMA(start, (float)reach, forward, end);
+	}
+	if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))
+	{
+		if (tr.fraction < 1.0)
+		{
+			if(tr.ent->takedamage)
+				T_Damage(tr.ent, self, self, aimdir, tr.endpos, tr.plane.normal, damage, kick, 0, 0); //Inflict damage on what is in path
+			else
+			{
+				if ((!strncmp(tr.surface->name, "sky", 3)))
+				{
+					gi.WriteByte(svc_temp_entity);
+					gi.WriteByte(TE_GUNSHOT);
+					gi.WritePosition(tr.endpos);
+					gi.WriteDir(tr.plane.normal);
+					gi.multicast(tr.endpos, MULTICAST_PVS);
+
+					if(self->client)
+						PlayerNoise(self, tr.endpos, PNOISE_IMPACT);
+				}
+			}
+		}
+	}
+	return;
+}
