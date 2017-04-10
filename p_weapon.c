@@ -1424,10 +1424,10 @@ void wrench_hit(edict_t *ent, vec3_t g_offset, int damage)
 	VectorSet(offset, 24, 8, ent->viewheight-8);
 	VectorAdd(offset, g_offset, offset);
 	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
-	VectorScale(forward, -2, ent->client->kick_origin);
+	VectorScale(forward, 5, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	wrench(ent, start, forward, 5000000, damage, 200, 0);
+	wrench(ent, start, forward, 10000, damage, 200, 0);
 }
 void Weapon_Wrench_Fire(edict_t* ent)
 {

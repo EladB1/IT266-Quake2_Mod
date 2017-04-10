@@ -1532,7 +1532,7 @@ always owned, never in the world
 		"misc/w_pkup.wav",
 		NULL,
 		0,
-		"models/weapons/v_blast/tris.md2",
+		"models/weapons/v_bfg/tris.md2",
 		"w_blaster",
 		"Wrench", //pickup name
 		0,

@@ -903,7 +903,7 @@ void wrench(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, i
 	vec3_t forward, right, up, dir, end;
 	trace_t tr;
 
-	tr = gi.trace(self->s.origin, NULL, NULL, start, self, MASK_SHOT); //line trace from player
+	tr = gi.trace(self->s.origin, NULL, NULL, start, self, MASK_MONSTERSOLID); //line trace from player
 
 	if (!(tr.fraction) < 1.0)
 	{
@@ -911,7 +911,9 @@ void wrench(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, i
 		AngleVectors(dir, forward, right, up);
 
 		//VectorNormalize(forward); //make the forward vector the unit vector
-		VectorMA(start, (float)reach, forward, end);
+		VectorMA(start, reach, forward, end);
+		VectorMA(self->velocity, 50, forward, self->velocity);
+		VectorMA(self->velocity, 50, up, self->velocity);
 	}
 	if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))
 	{
