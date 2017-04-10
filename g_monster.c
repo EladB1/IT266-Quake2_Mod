@@ -529,7 +529,6 @@ qboolean monster_start (edict_t *self)
 
 	if (!(self->monsterinfo.aiflags & AI_GOOD_GUY))
 		level.total_monsters++;
-
 	self->nextthink = level.time + FRAMETIME;
 	self->svflags |= SVF_MONSTER;
 	self->s.renderfx |= RF_FRAMELERP;
@@ -557,7 +556,6 @@ qboolean monster_start (edict_t *self)
 	// randomize what frame they start on
 	if (self->monsterinfo.currentmove)
 		self->s.frame = self->monsterinfo.currentmove->firstframe + (rand() % (self->monsterinfo.currentmove->lastframe - self->monsterinfo.currentmove->firstframe + 1));
-
 	return true;
 }
 
@@ -718,4 +716,14 @@ void swimmonster_start (edict_t *self)
 	self->flags |= FL_SWIM;
 	self->think = swimmonster_start_go;
 	monster_start (self);
+}
+//mod: spawn monsters in waves
+void waves(int wave, edict_t *self)
+{
+	int i;
+	for(i = 0; i < wave; ++i)
+	{
+		self->think = walkmonster_start;
+		monster_start(self);
+	}
 }
