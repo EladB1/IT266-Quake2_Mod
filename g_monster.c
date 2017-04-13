@@ -720,10 +720,13 @@ void swimmonster_start (edict_t *self)
 //mod: spawn monsters in waves
 void waves(int wave, edict_t *self)
 {
-	int i;
-	for(i = 0; i < wave; ++i)
+	if(level.total_monsters == 0)
 	{
-		self->think = walkmonster_start;
-		monster_start(self);
+		int i;
+		for(i = 0; i < wave; ++i)
+		{
+			self->think = walkmonster_start;
+			monster_start(self);
+		}
 	}
 }
