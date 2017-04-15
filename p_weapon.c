@@ -1427,15 +1427,15 @@ void wrench_hit(edict_t *ent, vec3_t g_offset, int damage)
 	VectorScale(forward, 5, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	wrench(ent, start, forward, 2048, damage, 200, 0);
+	wrench(ent, start, forward, 50, damage, 200, 0);
 }
 void Weapon_Wrench_Fire(edict_t* ent)
 {
 	int damage;
 	if(deathmatch->value)
-		damage = 50;
+		damage = 5;
 	else
-		damage = 55;
+		damage = 10;
 	wrench_hit(ent, vec3_origin, damage);
 	ent->client->ps.gunframe++;
 }

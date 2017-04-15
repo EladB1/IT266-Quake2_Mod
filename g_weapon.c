@@ -914,7 +914,7 @@ void wrench(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, i
 
 		//VectorNormalize(forward); //make the forward vector the unit vector
 		VectorMA(start, reach, forward, end);
-		VectorMA(self->velocity, 500, forward, self->velocity);
+		VectorMA(self->velocity, 150, forward, self->velocity);
 		VectorMA(self->velocity, 50, up, self->velocity);
 	}
 	if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))

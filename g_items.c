@@ -1539,9 +1539,10 @@ always owned, never in the world
 		0,
 		NULL,
 		IT_WEAPON,
+		WEAP_WRENCH,
 		NULL,
 		0,
-		 "weapons/blastf1a.wav misc/lasfly.wav" //blaster sound //change later
+		 "      player/gasp2.wav world/land.wav" //thud sound
 	},
 
 	//
