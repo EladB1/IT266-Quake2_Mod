@@ -1522,7 +1522,7 @@ always owned, never in the world
 /* precache */ "sprites/s_bfg1.sp2 sprites/s_bfg2.sp2 sprites/s_bfg3.sp2 weapons/bfg__f1y.wav weapons/bfg__l1a.wav weapons/bfg__x1b.wav weapons/bfg_hum.wav"
 	},
 
-	//mod: weapon_melee_hit
+	//mod: wrench
 	{
 		"weapon_wrench",
 		NULL,
@@ -1532,7 +1532,7 @@ always owned, never in the world
 		"misc/w_pkup.wav",
 		NULL,
 		0,
-		"models/weapons/v_bfg/tris.md2",
+		"models/weapons/v_blast/tris.md2", //"models/weapons/v_bfg/tris.md2",
 		"w_blaster",
 		"Wrench", //pickup name
 		0,
@@ -1542,7 +1542,30 @@ always owned, never in the world
 		WEAP_WRENCH,
 		NULL,
 		0,
-		 "      player/gasp2.wav world/land.wav" //thud sound
+		 "player/gasp2.wav" //thud sound
+	},
+
+	//mod: battering ram
+	{
+		"weapon_battering_ram",
+		NULL,
+		Use_Weapon,
+		NULL,
+		Weapon_Wrench,
+		"misc/w_pkup.wav",
+		NULL,
+		0,
+		"models/weapons/v_bfg/tris.md2",
+		"w_blaster",
+		"Battering Ram", //pickup name
+		0,
+		0,
+		NULL,
+		IT_WEAPON,
+		WEAP_BATTERINGRAM,
+		NULL,
+		0,
+		 "player/gasp2.wav" //thud sound
 	},
 
 	//

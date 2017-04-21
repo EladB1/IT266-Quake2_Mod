@@ -592,6 +592,9 @@ void InitClientPersistant (gclient_t *client)
 	memset (&client->pers, 0, sizeof(client->pers));
 	
 	//mod: add melee weapon to player
+	item = FindItem("Battering Ram");
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
+
 	item = FindItem("Wrench");
 	client->pers.inventory[ITEM_INDEX(item)] = 1;
 

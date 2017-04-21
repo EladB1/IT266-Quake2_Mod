@@ -1427,15 +1427,15 @@ void wrench_hit(edict_t *ent, vec3_t g_offset, int damage)
 	VectorScale(forward, 5, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	wrench(ent, start, forward, 50, damage, 200, 0);
+	melee(ent, start, forward, 25, damage, 200, 50, 0);
 }
 void Weapon_Wrench_Fire(edict_t* ent)
 {
 	int damage;
 	if(deathmatch->value)
-		damage = 5;
+		damage = 8;
 	else
-		damage = 10;
+		damage = 5;
 	wrench_hit(ent, vec3_origin, damage);
 	ent->client->ps.gunframe++;
 }
@@ -1444,5 +1444,38 @@ void Weapon_Wrench(edict_t* ent)
 	static int pause_frames[] = {19, 32, 0};
 	static int fire_frames[] = {5, 0};
 
-	Weapon_Generic(ent, 4, 8, 52 ,55, pause_frames, fire_frames, Weapon_Wrench_Fire);
+	Weapon_Generic(ent, 4, 4, 52, 55, pause_frames, fire_frames, Weapon_Wrench_Fire);
+}
+
+//mod: battering ram
+void battering_ram_hit(edict_t *ent, vec3_t g_offset, int damage)
+{
+	vec3_t forward, right, start, offset;
+	/*if(is_quad)
+		damage *= 4;*/
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+	VectorSet(offset, 24, 8, ent->viewheight-8);
+	VectorAdd(offset, g_offset, offset);
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+	VectorScale(forward, 5, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	melee(ent, start, forward, 250, damage, 500, 100, 0);
+}
+void Weapon_battering_ram_Fire(edict_t* ent)
+{
+	int damage;
+	if(deathmatch->value)
+		damage = 20;
+	else
+		damage = 15;
+	battering_ram_hit(ent, vec3_origin, damage);
+	ent->client->ps.gunframe++;
+}
+void Weapon_battering_ram(edict_t* ent)
+{
+	static int pause_frames[] = {19, 32, 0};
+	static int fire_frames[] = {5, 0};
+
+	Weapon_Generic(ent, 4, 64, 52, 55, pause_frames, fire_frames, Weapon_Wrench_Fire);
 }

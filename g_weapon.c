@@ -898,7 +898,7 @@ void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, f
 }
 
 //mod: melee weapons
-void wrench(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod)
+void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int velocity, int mod)
 {
 	vec3_t forward, right, up, dir, end;
 	trace_t tr;
@@ -914,8 +914,8 @@ void wrench(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, i
 
 		//VectorNormalize(forward); //make the forward vector the unit vector
 		VectorMA(start, reach, forward, end);
-		VectorMA(self->velocity, 150, forward, self->velocity);
-		VectorMA(self->velocity, 50, up, self->velocity);
+		VectorMA(self->velocity, velocity, forward, self->velocity);
+		VectorMA(self->velocity, velocity, up, self->velocity);
 	}
 	if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))
 	{
