@@ -18,6 +18,7 @@ void Weapon_Railgun (edict_t *ent);
 void Weapon_BFG (edict_t *ent);
 
 void Weapon_Wrench(edict_t *ent);
+void Weapon_battering_ram(edict_t *ent);
 
 gitem_armor_t jacketarmor_info	= { 25,  50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info	= { 50, 100, .60, .30, ARMOR_COMBAT};
@@ -1551,7 +1552,7 @@ always owned, never in the world
 		NULL,
 		Use_Weapon,
 		NULL,
-		Weapon_Wrench,
+		Weapon_battering_ram,
 		"misc/w_pkup.wav",
 		NULL,
 		0,

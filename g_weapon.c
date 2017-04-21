@@ -898,7 +898,7 @@ void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, f
 }
 
 //mod: melee weapons
-void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int velocity, int mod)
+void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod)
 {
 	vec3_t forward, right, up, dir, end;
 	trace_t tr;
@@ -911,11 +911,6 @@ void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, in
 	{
 		vectoangles(aimdir, dir); //face the direction aiming in
 		AngleVectors(dir, forward, right, up);
-
-		//VectorNormalize(forward); //make the forward vector the unit vector
-		VectorMA(start, reach, forward, end);
-		VectorMA(self->velocity, velocity, forward, self->velocity);
-		VectorMA(self->velocity, velocity, up, self->velocity);
 	}
 	if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))
 	{

@@ -1427,7 +1427,7 @@ void wrench_hit(edict_t *ent, vec3_t g_offset, int damage)
 	VectorScale(forward, 5, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	melee(ent, start, forward, 25, damage, 200, 50, 0);
+	melee(ent, start, forward, 50, damage, 150, 0);
 }
 void Weapon_Wrench_Fire(edict_t* ent)
 {
@@ -1460,7 +1460,7 @@ void battering_ram_hit(edict_t *ent, vec3_t g_offset, int damage)
 	VectorScale(forward, 5, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	melee(ent, start, forward, 250, damage, 500, 100, 0);
+	melee(ent, start, forward, 250, damage, 500, 0);
 }
 void Weapon_battering_ram_Fire(edict_t* ent)
 {
@@ -1477,5 +1477,5 @@ void Weapon_battering_ram(edict_t* ent)
 	static int pause_frames[] = {19, 32, 0};
 	static int fire_frames[] = {5, 0};
 
-	Weapon_Generic(ent, 4, 64, 52, 55, pause_frames, fire_frames, Weapon_Wrench_Fire);
+	Weapon_Generic(ent, 4, 12, 52, 55, pause_frames, fire_frames, Weapon_battering_ram_Fire);
 }
