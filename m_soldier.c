@@ -1211,7 +1211,9 @@ void SP_monster_soldier_x (edict_t *self)
 	self->monsterinfo.stand (self);
 
 	walkmonster_start (self);
-	waves(2, self);
+
+	//waves(self, 2);
+	init_game_mode(self);
 }
 
 

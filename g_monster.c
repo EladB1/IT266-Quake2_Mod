@@ -718,15 +718,25 @@ void swimmonster_start (edict_t *self)
 	monster_start (self);
 }
 //mod: spawn monsters in waves
-void waves(int wave, edict_t *self)
+void waves(edict_t *self, int wave)
 {
-	if(level.total_monsters <= 1)
-	{
-		int i;
-		for(i = 0; i < wave; ++i)
-		{
-			self->think = walkmonster_start;
-			monster_start(self);
-		}
-	}
+	 edict_t *npc = G_Spawn();
+	 vec3_t origin, angles;
+
+	 
+	 
+
+	 //SelectSpawnPoint (npc, origin, angles);
+	 VectorCopy(origin, npc->s.origin);
+
+
+	 //gi.dprintf("%s\n", "NPC spawned");
+	 gi.linkentity(npc);
+}
+void init_game_mode(edict_t *self)
+{
+	skill->value = 0; //update skill->value to change difficulty of waves
+	BeginIntermission(CreateTargetChangeLevel("q2dm1"));
+	gi.centerprintf(self, "%s\n", "Map Changed");
+	waves(self, 2);
 }
