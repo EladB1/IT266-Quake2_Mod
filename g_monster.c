@@ -9,6 +9,9 @@
 // and we can mess it up based on skill.  Spread should be for normal
 // and we can tighten or loosen based on skill.  We could muck with
 // the damages too, but I'm not sure that's such a good idea.
+
+void SP_monster_soldier_light (edict_t *self); //redefine this up here so waves can use it properly
+
 void monster_fire_bullet (edict_t *self, vec3_t start, vec3_t dir, int damage, int kick, int hspread, int vspread, int flashtype)
 {
 	fire_bullet (self, start, dir, damage, kick, hspread, vspread, MOD_UNKNOWN);
@@ -718,25 +721,30 @@ void swimmonster_start (edict_t *self)
 	monster_start (self);
 }
 //mod: spawn monsters in waves
+void spawn_enemy(edict_t *self)
+{
+	 edict_t* npc = G_Spawn();
+	 npc->s.origin[2] += 25; //spawn off the ground
+	 SP_monster_soldier_light(npc);
+	 gi.linkentity(npc);
+	 npc->s.origin[0] = 1200 + crandom();
+	 npc->s.origin[1] = 650 + crandom();
+	 npc->s.origin[2] = 490;
+	 gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
+	 //gi.dprintf("You spawned at: %f, %f, %f\n", self->s.origin[0], self->s.origin[1], self->s.origin[2]); //1248, 672, 482
+
+}
 void waves(edict_t *self, int wave)
 {
-	 edict_t *npc = G_Spawn();
-	 vec3_t origin, angles;
-
-	 
-	 
-
-	 //SelectSpawnPoint (npc, origin, angles);
-	 VectorCopy(origin, npc->s.origin);
-
-
-	 //gi.dprintf("%s\n", "NPC spawned");
-	 gi.linkentity(npc);
+	int i;
+	gi.dprintf("%i enemies spawned\n", wave);
+	for(i = 0; i < wave; ++i)
+		spawn_enemy(self);
 }
 void init_game_mode(edict_t *self)
 {
 	skill->value = 0; //update skill->value to change difficulty of waves
 	BeginIntermission(CreateTargetChangeLevel("q2dm1"));
 	gi.centerprintf(self, "%s\n", "Map Changed");
-	waves(self, 2);
+	//waves(self, 2);
 }

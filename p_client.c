@@ -1,6 +1,9 @@
 #include "g_local.h"
 #include "m_player.h"
 
+void init_game_mode(edict_t *self); //redeclare so no problems running function
+void waves(edict_t *self, int wave); //redeclare so no problems running function
+
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 void SP_misc_teleporter_dest (edict_t *ent);
@@ -1292,6 +1295,7 @@ to be placed into the game.  This will happen every level load.
 */
 void ClientBegin (edict_t *ent)
 {
+	static int		needMapChange = 1;
 	int		i;
 
 	ent->client = game.clients + (ent - g_edicts - 1);
@@ -1344,6 +1348,13 @@ void ClientBegin (edict_t *ent)
 
 	// make sure all view stuff is valid
 	ClientEndServerFrame (ent);
+	
+	if(needMapChange)
+	{
+		init_game_mode(ent);
+		needMapChange = 0;
+	}
+	waves(ent, 2);
 }
 
 /*
