@@ -1295,7 +1295,7 @@ to be placed into the game.  This will happen every level load.
 */
 void ClientBegin (edict_t *ent)
 {
-	static int		needMapChange = 1;
+	static char		needMapChange = 1; //save space by using char instead of int
 	int		i;
 
 	ent->client = game.clients + (ent - g_edicts - 1);
