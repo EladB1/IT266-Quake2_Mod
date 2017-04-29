@@ -10,6 +10,8 @@
 // and we can tighten or loosen based on skill.  We could muck with
 // the damages too, but I'm not sure that's such a good idea.
 
+vec3_t spawn_points[10];
+
 void SP_monster_soldier_light (edict_t *self); //redefine this up here so waves can use it properly
 
 void monster_fire_bullet (edict_t *self, vec3_t start, vec3_t dir, int damage, int kick, int hspread, int vspread, int flashtype)
@@ -721,35 +723,40 @@ void swimmonster_start (edict_t *self)
 	monster_start (self);
 }
 //mod: spawn monsters in waves
-void spawn_enemy(edict_t *self)
+void set_spawn_points (){ //spawn_points is a global variable at the start of the file
+	VectorSet(spawn_points[0], 1653.625, 330.25, 550);
+	VectorSet(spawn_points[1], 858.375, 1402.875, 800);
+	VectorSet(spawn_points[2], 1746.875, 1263.875, 1048.125);
+	VectorSet(spawn_points[3], 42.5, 752.5, 472.25);
+	VectorSet(spawn_points[4], 1949.875, 874.5, 408.125);
+	VectorSet(spawn_points[5], 865.25, 590.375, 472.25);
+	VectorSet(spawn_points[6], 1405.875, 1741.625, 792.125);
+	VectorSet(spawn_points[7], 963.25, -39.75, 920.125);
+	VectorSet(spawn_points[8], 1998.75, 439.75, 408.125 );
+	VectorSet(spawn_points[9], 1097.375, 738.125, 352.125);
+}
+void spawn_enemy(edict_t *self, int spawn_point_index)
 {
 	 edict_t* npc = G_Spawn();
+	 set_spawn_points(); //this must be called so the spawn_points vectors aren't all the zero vector
 	 SP_monster_soldier_light(npc);
 	 gi.linkentity(npc);
-	 VectorSet(npc->s.origin, 1200 - 50 * crandom(), 640 - 50 * crandom(), 490);
+	 if(spawn_point_index < 0 || spawn_point_index >= 10)
+		 return;
+	 VectorCopy(spawn_points[spawn_point_index], npc->s.origin);
 	 gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
-	 //gi.dprintf("You spawned at: %f, %f, %f\n", self->s.origin[0], self->s.origin[1], self->s.origin[2]); //1248, 672, 482
-	 /* Spawn position list
-	 1653.625, 330.25, 536.125
-	 858.375, 1402.875, 792.125
-	 1746.875, 1263.875, 1048.125
-	 42.5, 752.5, 472.25
-	 1949.875, 874.5, 408.125
-	 865.25, 590.375, 472.25
-	 1405.875, 1741.625, 792.125
-	 963.25, -39.75, 920.125
-	 1998.75, 439.75, 408.125
-	 1097.375, 738.125, 352.125
-	 */
-
 }
 void waves(edict_t *self, int wave)
 {
-	int i;
+	int i, index;
 	gi.dprintf("%i enemies spawned\n", wave);
 	for(i = 0; i < wave; ++i)
 	{
-		spawn_enemy(self);
+		if(i <= 9)
+			index = i;
+		else
+			index = i - 9;
+		spawn_enemy(self, index);
 		self->nextthink = self->wait;
 	}
 }
