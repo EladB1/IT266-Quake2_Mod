@@ -726,7 +726,7 @@ void swimmonster_start (edict_t *self)
 void set_spawn_points (){ //spawn_points is a global variable at the start of the file
 	VectorSet(spawn_points[0], 1653.625, 330.25, 550);
 	VectorSet(spawn_points[1], 858.375, 1402.875, 800);
-	VectorSet(spawn_points[2], 1746.875, 1263.875, 1048.125);
+	VectorSet(spawn_points[2], 1860.25, 970.25, 1048.125);
 	VectorSet(spawn_points[3], 42.5, 752.5, 472.25);
 	VectorSet(spawn_points[4], 1949.875, 874.5, 408.125);
 	VectorSet(spawn_points[5], 865.25, 590.375, 472.25);
@@ -749,7 +749,7 @@ void spawn_enemy(edict_t *self, int spawn_point_index)
 void waves(edict_t *self, int wave)
 {
 	int i, index;
-	gi.dprintf("%i enemies spawned\n", wave);
+	gi.dprintf("%i enemies spawned\n", wave+1);
 	for(i = 0; i < wave; ++i)
 	{
 		if(i <= 9)
@@ -757,14 +757,28 @@ void waves(edict_t *self, int wave)
 		else
 			index = i - 9;
 		spawn_enemy(self, index);
-		self->nextthink = self->wait;
+		self->nextthink = level.time + 0.1;
 	}
+	gi.dprintf("total monsters: %d\n", level.total_monsters);
+}
+void waveLogic(edict_t *self)
+{
+	gi.centerprintf(self, "Beginning Wave: %d\n", level.wave_number);
+	//waves(self, level.wave_number * 2);
+	if(level.killed_monsters == level.wave_number) //killed all enemies
+	{
+		gi.dprintf("%s\n", "Wave cleared!");
+		gi.centerprintf(self, "%s\n", "Wave cleared!");
+		level.wave_number++;
+	}	
 }
 void init_game_mode(edict_t *self)
 {
 	skill->value = 0; //update skill->value to change difficulty of waves
+	//self->
 	BeginIntermission(CreateTargetChangeLevel("q2dm1"));
 	gi.centerprintf(self, "%s\n", "Map Changed");
-	self->nextthink = level.time + FRAMETIME;
+	//level.intermissiontime = 100;
+	level.wave_number = 1;
 	//waves(self, 2);
 }

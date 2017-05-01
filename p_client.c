@@ -3,6 +3,7 @@
 
 void init_game_mode(edict_t *self); //redeclare so no problems running function
 void waves(edict_t *self, int wave); //redeclare so no problems running function
+void waveLogic(edict_t *self);
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
@@ -1352,9 +1353,11 @@ void ClientBegin (edict_t *ent)
 	if(needMapChange)
 	{
 		init_game_mode(ent);
+		ent->nextthink = level.time + 0.1;
 		needMapChange = 0;
+		ent->nextthink = level.time + 0.1;
 	}
-	waves(ent, 2);
+	waveLogic(ent);
 }
 
 /*

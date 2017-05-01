@@ -1297,9 +1297,9 @@ always owned, never in the world
 */
 	{
 		"weapon_shotgun", 
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_Shotgun,
 		"misc/w_pkup.wav",
 		"models/weapons/g_shotg/tris.md2", EF_ROTATE,
@@ -1320,9 +1320,9 @@ always owned, never in the world
 */
 	{
 		"weapon_supershotgun", 
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_SuperShotgun,
 		"misc/w_pkup.wav",
 		"models/weapons/g_shotg2/tris.md2", EF_ROTATE,
@@ -1343,9 +1343,9 @@ always owned, never in the world
 */
 	{
 		"weapon_machinegun", 
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_Machinegun,
 		"misc/w_pkup.wav",
 		"models/weapons/g_machn/tris.md2", EF_ROTATE,
@@ -1389,9 +1389,9 @@ always owned, never in the world
 */
 	{
 		"ammo_grenades",
-		Pickup_Ammo,
+		NULL, //Pickup_Ammo,
 		Use_Weapon,
-		Drop_Ammo,
+		NULL, //Drop_Ammo,
 		Weapon_Grenade,
 		"misc/am_pkup.wav",
 		"models/items/ammo/grenades/medium/tris.md2", 0,
@@ -1412,9 +1412,9 @@ always owned, never in the world
 */
 	{
 		"weapon_grenadelauncher",
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_GrenadeLauncher,
 		"misc/w_pkup.wav",
 		"models/weapons/g_launch/tris.md2", EF_ROTATE,
@@ -1435,9 +1435,9 @@ always owned, never in the world
 */
 	{
 		"weapon_rocketlauncher",
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_RocketLauncher,
 		"misc/w_pkup.wav",
 		"models/weapons/g_rocket/tris.md2", EF_ROTATE,
@@ -1458,9 +1458,9 @@ always owned, never in the world
 */
 	{
 		"weapon_hyperblaster", 
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_HyperBlaster,
 		"misc/w_pkup.wav",
 		"models/weapons/g_hyperb/tris.md2", EF_ROTATE,
@@ -1481,9 +1481,9 @@ always owned, never in the world
 */
 	{
 		"weapon_railgun", 
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_Railgun,
 		"misc/w_pkup.wav",
 		"models/weapons/g_rail/tris.md2", EF_ROTATE,
@@ -1504,9 +1504,9 @@ always owned, never in the world
 */
 	{
 		"weapon_bfg",
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_BFG,
 		"misc/w_pkup.wav",
 		"models/weapons/g_bfg/tris.md2", EF_ROTATE,
@@ -1577,9 +1577,9 @@ always owned, never in the world
 */
 	{
 		"ammo_shells",
-		Pickup_Ammo,
+		NULL, //Pickup_Ammo,
 		NULL,
-		Drop_Ammo,
+		NULL, //Drop_Ammo,
 		NULL,
 		"misc/am_pkup.wav",
 		"models/items/ammo/shells/medium/tris.md2", 0,
@@ -1600,9 +1600,9 @@ always owned, never in the world
 */
 	{
 		"ammo_bullets",
-		Pickup_Ammo,
+		NULL, //Pickup_Ammo,
 		NULL,
-		Drop_Ammo,
+		NULL, //Drop_Ammo,
 		NULL,
 		"misc/am_pkup.wav",
 		"models/items/ammo/bullets/medium/tris.md2", 0,
@@ -1623,9 +1623,9 @@ always owned, never in the world
 */
 	{
 		"ammo_cells",
-		Pickup_Ammo,
+		NULL, //Pickup_Ammo,
 		NULL,
-		Drop_Ammo,
+		NULL, //Drop_Ammo,
 		NULL,
 		"misc/am_pkup.wav",
 		"models/items/ammo/cells/medium/tris.md2", 0,
@@ -1646,9 +1646,9 @@ always owned, never in the world
 */
 	{
 		"ammo_rockets",
-		Pickup_Ammo,
+		NULL, //Pickup_Ammo,
 		NULL,
-		Drop_Ammo,
+		NULL, //Drop_Ammo,
 		NULL,
 		"misc/am_pkup.wav",
 		"models/items/ammo/rockets/medium/tris.md2", 0,
@@ -1669,9 +1669,9 @@ always owned, never in the world
 */
 	{
 		"ammo_slugs",
-		Pickup_Ammo,
+		NULL, //Pickup_Ammo,
 		NULL,
-		Drop_Ammo,
+		NULL, //Drop_Ammo,
 		NULL,
 		"misc/am_pkup.wav",
 		"models/items/ammo/slugs/medium/tris.md2", 0,

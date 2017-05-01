@@ -321,6 +321,8 @@ typedef struct
 	int			body_que;			// dead bodies
 
 	int			power_cubes;		// ugly necessity for coop
+
+	int			wave_number;
 } level_locals_t;
 
 
