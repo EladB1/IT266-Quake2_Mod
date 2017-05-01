@@ -1366,9 +1366,9 @@ always owned, never in the world
 */
 	{
 		"weapon_chaingun", 
-		Pickup_Weapon,
+		NULL, //Pickup_Weapon,
 		Use_Weapon,
-		Drop_Weapon,
+		NULL, //Drop_Weapon,
 		Weapon_Chaingun,
 		"misc/w_pkup.wav",
 		"", 0, //"models/weapons/g_chain/tris.md2", EF_ROTATE,
@@ -1882,12 +1882,12 @@ gives +1 to maximum health
 */
 	{
 		"item_pack",
-		Pickup_Pack,
+		NULL, //Pickup_Pack,
 		NULL,
 		NULL,
 		NULL,
 		"items/pkup.wav",
-		"models/items/pack/tris.md2", EF_ROTATE,
+		"", 0, //"models/items/pack/tris.md2", EF_ROTATE,
 		NULL,
 /* icon */		"i_pack",
 /* pickup */	"Ammo Pack",

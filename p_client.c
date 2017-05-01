@@ -1706,15 +1706,16 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				continue;
 			other->touch (other, ent, NULL, NULL);
 		}
-
 		if(level.killed_monsters == level.wave_number)
 		{
 			level.total_monsters -= level.killed_monsters; //get rid of enemies that were killed in past waves
 			level.killed_monsters = 0;
 			level.wave_number++;
+			ent->nextthink = level.time + 10;
 			gi.centerprintf(ent, "%s\n", "Wave cleared!");
+			ent->nextthink = level.time + 10;
 			gi.centerprintf(ent, "Beginning wave %d.\n", level.wave_number);
-			ent->nextthink = level.time + 0.1;
+			ent->nextthink = level.time + 100;
 			waves(ent, level.wave_number);
 			if(level.wave_number == 5)
 			{

@@ -753,10 +753,11 @@ void spawn_enemy(edict_t *self, int spawn_point_index)
 	 set_spawn_points(); //this must be called so the spawn_points vectors aren't all the zero vector
 	 SP_monster_soldier_light(npc);
 	 gi.linkentity(npc);
+	 level.total_monsters--; //for some reason waves is giving the wrong number of total monsters (wasn't doing this before)
 	 if(spawn_point_index < 0 || spawn_point_index >= 10)
 		 return;
 	 VectorCopy(spawn_points[spawn_point_index], npc->s.origin);
-	 walkmonster_start_go(npc); //make the enemies walk around
+	 walkmonster_start(npc); //make the enemies walk around
 	 //gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
 }
 void waves(edict_t *self, int wave)
@@ -770,26 +771,14 @@ void waves(edict_t *self, int wave)
 		else
 			index = i - 9;
 		spawn_enemy(self, index);
-		self->nextthink = level.time + 0.1;
+		self->nextthink = level.time + 0.01;
 	}
-	gi.dprintf("total monsters: %d\n", level.total_monsters);
-}
-void waveLogic(edict_t *self)
-{
-	gi.centerprintf(self, "Beginning Wave: %d\n", level.wave_number);
-	//waves(self, level.wave_number * 2);
-	if(level.killed_monsters == level.wave_number) //killed all enemies
-	{
-		gi.dprintf("%s\n", "Wave cleared!");
-		gi.centerprintf(self, "%s\n", "Wave cleared!");
-		level.wave_number++;
-	}	
 }
 void init_game_mode(edict_t *self)
 {
 	skill->value = 0; //update skill->value to change difficulty of waves
 	BeginIntermission(CreateTargetChangeLevel("q2dm1"));
 	gi.centerprintf(self, "%s\n", "Map Changed");
-	self->nextthink = level.time + 0.1;
+	self->nextthink = level.time + 0.01;
 	level.wave_number = 1;
 }
