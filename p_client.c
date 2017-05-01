@@ -384,7 +384,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		}
 	}
 
-	gi.bprintf (PRINT_MEDIUM,"%s died.\n", self->client->pers.netname);
+	gi.centerprintf (self,"%s died on wave %d.\n", self->client->pers.netname, level.wave_number);
 	if (deathmatch->value)
 		self->client->resp.score--;
 }
@@ -1357,6 +1357,8 @@ void ClientBegin (edict_t *ent)
 		needMapChange = 0;
 		ent->nextthink = level.time + 0.1;
 	}
+	gi.centerprintf(ent, "Beginning wave 1\n");
+	level.wave_number = 1;
 	waves(ent, 1);
 }
 
@@ -1703,6 +1705,48 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			if (!other->touch)
 				continue;
 			other->touch (other, ent, NULL, NULL);
+		}
+
+		if(level.killed_monsters == level.wave_number)
+		{
+			level.total_monsters -= level.killed_monsters; //get rid of enemies that were killed in past waves
+			level.killed_monsters = 0;
+			level.wave_number++;
+			gi.centerprintf(ent, "%s\n", "Wave cleared!");
+			gi.centerprintf(ent, "Beginning wave %d.\n", level.wave_number);
+			ent->nextthink = level.time + 0.1;
+			waves(ent, level.wave_number);
+			if(level.wave_number == 5)
+			{
+				skill->value = 1; //increase difficulty
+				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
+				if(ent->health <= 80)
+					ent->health += 20;
+			}
+			else if(level.wave_number == 10)
+			{
+				skill->value = 2; //increase difficulty
+				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
+				if(ent->health <= 70)
+					ent->health += 30;
+				ent->enemy->speed *= 1.25;
+			}
+			else if(level.wave_number == 15)
+			{
+				skill->value = 3; //increase difficulty
+				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
+				ent->health = 100; //you deserve it
+				ent->enemy->speed *= 1.5;
+				ent->enemy->health *= 1.25;
+			}
+			else if(level.wave_number == 20)
+			{
+				skill->value = 4; //increase difficulty
+				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
+				ent->health = 100; //you deserve more
+				ent->enemy->speed *= 2;
+				ent->enemy->health *= 1.5;
+			}
 		}
 
 	}

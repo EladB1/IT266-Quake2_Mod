@@ -47,7 +47,7 @@ void monster_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, 
 
 void monster_fire_wrench (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect)
 {
-	melee (self, start, dir, 50, 10, 20, 0);
+	melee (self, start, dir, 100, 10, 20, 0);
 	//wrench_hit (self, start, dir, 50, 10, 150, 0);
 
 	gi.WriteByte (svc_muzzleflash2);
@@ -738,7 +738,7 @@ void swimmonster_start (edict_t *self)
 void set_spawn_points (){ //spawn_points is a global variable at the start of the file
 	VectorSet(spawn_points[0], 1653.625, 330.25, 550);
 	VectorSet(spawn_points[1], 858.375, 1402.875, 800);
-	VectorSet(spawn_points[2], 1860.25, 970.25, 1048.125);
+	VectorSet(spawn_points[2], 1434, 1255.875, 920.125);
 	VectorSet(spawn_points[3], 42.5, 752.5, 472.25);
 	VectorSet(spawn_points[4], 1949.875, 874.5, 408.125);
 	VectorSet(spawn_points[5], 865.25, 590.375, 472.25);
@@ -756,12 +756,13 @@ void spawn_enemy(edict_t *self, int spawn_point_index)
 	 if(spawn_point_index < 0 || spawn_point_index >= 10)
 		 return;
 	 VectorCopy(spawn_points[spawn_point_index], npc->s.origin);
-	 gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
+	 walkmonster_start_go(npc); //make the enemies walk around
+	 //gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
 }
 void waves(edict_t *self, int wave)
 {
 	int i, index;
-	gi.dprintf("%i enemies spawned\n", wave+1);
+	gi.dprintf("%i enemies spawned\n", wave);
 	for(i = 0; i < wave; ++i)
 	{
 		if(i <= 9)
@@ -789,7 +790,6 @@ void init_game_mode(edict_t *self)
 	skill->value = 0; //update skill->value to change difficulty of waves
 	BeginIntermission(CreateTargetChangeLevel("q2dm1"));
 	gi.centerprintf(self, "%s\n", "Map Changed");
-	//level.intermissiontime = 100;
+	self->nextthink = level.time + 0.1;
 	level.wave_number = 1;
-	//waves(self, 2);
 }
