@@ -8,6 +8,6 @@
 * Final Project Deliverables:
   * Add melee weapons (ideally vary the weapons).
   * Monsters spawn in waves.
-  * Difficulty increases based on the skill of the player (will probably be time based).
+  * Difficulty increases based on the skill of the player (will probably be based on time or number of waves).
   * Change the UI.
   
