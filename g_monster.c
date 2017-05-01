@@ -11,6 +11,7 @@
 // the damages too, but I'm not sure that's such a good idea.
 
 vec3_t spawn_points[10];
+void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod);
 
 void SP_monster_soldier_light (edict_t *self); //redefine this up here so waves can use it properly
 
@@ -37,6 +38,17 @@ void monster_fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damag
 void monster_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect)
 {
 	fire_blaster (self, start, dir, damage, speed, effect, false);
+
+	gi.WriteByte (svc_muzzleflash2);
+	gi.WriteShort (self - g_edicts);
+	gi.WriteByte (flashtype);
+	gi.multicast (start, MULTICAST_PVS);
+}	
+
+void monster_fire_wrench (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect)
+{
+	melee (self, start, dir, 50, 10, 20, 0);
+	//wrench_hit (self, start, dir, 50, 10, 150, 0);
 
 	gi.WriteByte (svc_muzzleflash2);
 	gi.WriteShort (self - g_edicts);
@@ -775,7 +787,6 @@ void waveLogic(edict_t *self)
 void init_game_mode(edict_t *self)
 {
 	skill->value = 0; //update skill->value to change difficulty of waves
-	//self->
 	BeginIntermission(CreateTargetChangeLevel("q2dm1"));
 	gi.centerprintf(self, "%s\n", "Map Changed");
 	//level.intermissiontime = 100;

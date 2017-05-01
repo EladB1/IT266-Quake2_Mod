@@ -1357,7 +1357,7 @@ void ClientBegin (edict_t *ent)
 		needMapChange = 0;
 		ent->nextthink = level.time + 0.1;
 	}
-	waveLogic(ent);
+	waves(ent, 1);
 }
 
 /*
