@@ -990,7 +990,7 @@ void respawn (edict_t *self)
 
 		return;
 	}
-
+	self->enemy->health = 0;
 	// restart the entire server
 	gi.AddCommandString ("menu_loadgame\n");
 }

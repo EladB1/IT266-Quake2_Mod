@@ -751,12 +751,12 @@ void spawn_enemy(edict_t *self, int spawn_point_index)
 {
 	 edict_t* npc = G_Spawn();
 	 set_spawn_points(); //this must be called so the spawn_points vectors aren't all the zero vector
-	 SP_monster_soldier_light(npc);
-	 gi.linkentity(npc);
-	 level.total_monsters--; //for some reason waves is giving the wrong number of total monsters (wasn't doing this before)
 	 if(spawn_point_index < 0 || spawn_point_index >= 10)
 		 return;
 	 VectorCopy(spawn_points[spawn_point_index], npc->s.origin);
+	 SP_monster_soldier_light(npc);
+	 gi.linkentity(npc);
+	 level.total_monsters--; //for some reason waves is giving the wrong number of total monsters (wasn't doing this before)
 	 walkmonster_start(npc); //make the enemies walk around
 	 //gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
 }
@@ -766,10 +766,7 @@ void waves(edict_t *self, int wave)
 	gi.dprintf("%i enemies spawned\n", wave);
 	for(i = 0; i < wave; ++i)
 	{
-		if(i <= 9)
-			index = i;
-		else
-			index = i - 9;
+		index = rand() % 9 + 0; //randomize
 		spawn_enemy(self, index);
 		self->nextthink = level.time + 0.01;
 	}
