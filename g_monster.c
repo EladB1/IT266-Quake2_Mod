@@ -14,6 +14,8 @@ vec3_t spawn_points[10];
 vec3_t used_spawn_points[10]; //make sure a spawn point isn't used twice unless all spawn points used
 void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod);
 
+void soldier_walk1_random (edict_t *self);
+
 void SP_monster_soldier_light (edict_t *self); //redefine this up here so waves can use it properly
 
 void monster_fire_bullet (edict_t *self, vec3_t start, vec3_t dir, int damage, int kick, int hspread, int vspread, int flashtype)
@@ -758,16 +760,19 @@ void spawn_enemy(edict_t *self, int spawn_point_index)
 	 SP_monster_soldier_light(npc);
 	 gi.linkentity(npc);
 	 level.total_monsters--; //for some reason waves is giving the wrong number of total monsters (wasn't doing this before)
+	 
 	 walkmonster_start(npc); //make the enemies walk around
+	 self->monsterinfo.currentmove = &soldier_walk1_random;
 	 //gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
 }
 void waves(edict_t *self, int wave)
 {
 	int i, index;
 	gi.dprintf("%i enemies spawned\n", wave);
+	srand(time(NULL));
 	for(i = 0; i < wave; ++i)
 	{
-		index = rand() % 9 + 0; //randomize
+		index = rand() % 10; //randomize
 		spawn_enemy(self, index);
 		self->nextthink = level.time + 0.01;
 	}

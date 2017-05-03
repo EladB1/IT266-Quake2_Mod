@@ -992,7 +992,8 @@ void respawn (edict_t *self)
 	}
 	self->enemy->health = 0;
 	G_FreeEdict(self->enemy);
-	level.wave_number = 1;
+	level.total_monsters = 0;
+	level.wave_number = 0;
 	// restart the entire server
 	gi.AddCommandString ("menu_loadgame\n");
 }
