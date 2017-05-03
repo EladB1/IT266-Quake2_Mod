@@ -991,8 +991,9 @@ void respawn (edict_t *self)
 		return;
 	}
 	self->enemy->health = 0;
+	G_FreeEdict(self->enemy);
 	// restart the entire server
-	gi.AddCommandString ("menu_loadgame\n");
+	//gi.AddCommandString ("menu_loadgame\n");
 }
 
 /* 
@@ -1356,10 +1357,11 @@ void ClientBegin (edict_t *ent)
 		ent->nextthink = level.time + 0.1;
 		needMapChange = 0;
 		ent->nextthink = level.time + 0.1;
+		gi.centerprintf(ent, "Beginning wave 1\n");
+		level.wave_number = 1;
+		waves(ent, 1);
 	}
-	gi.centerprintf(ent, "Beginning wave 1\n");
-	level.wave_number = 1;
-	waves(ent, 1);
+	
 }
 
 /*

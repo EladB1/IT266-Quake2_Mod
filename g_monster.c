@@ -11,6 +11,7 @@
 // the damages too, but I'm not sure that's such a good idea.
 
 vec3_t spawn_points[10];
+vec3_t used_spawn_points[10]; //make sure a spawn point isn't used twice unless all spawn points used
 void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod);
 
 void SP_monster_soldier_light (edict_t *self); //redefine this up here so waves can use it properly
@@ -738,11 +739,11 @@ void swimmonster_start (edict_t *self)
 void set_spawn_points (){ //spawn_points is a global variable at the start of the file
 	VectorSet(spawn_points[0], 1653.625, 330.25, 550);
 	VectorSet(spawn_points[1], 858.375, 1402.875, 800);
-	VectorSet(spawn_points[2], 1434, 1255.875, 920.125);
+	VectorSet(spawn_points[2], 1797.625, 1187.125, 1048.125);
 	VectorSet(spawn_points[3], 42.5, 752.5, 472.25);
 	VectorSet(spawn_points[4], 1949.875, 874.5, 408.125);
-	VectorSet(spawn_points[5], 865.25, 590.375, 472.25);
-	VectorSet(spawn_points[6], 1405.875, 1741.625, 792.125);
+	VectorSet(spawn_points[5], 992.5, 520.625, 472.25);
+	VectorSet(spawn_points[6], 1172.75, 1698.5, 792.125);
 	VectorSet(spawn_points[7], 963.25, -39.75, 920.125);
 	VectorSet(spawn_points[8], 1998.75, 439.75, 408.125 );
 	VectorSet(spawn_points[9], 1097.375, 738.125, 352.125);
