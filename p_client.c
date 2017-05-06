@@ -3,9 +3,10 @@
 
 void init_game_mode(edict_t *self); //redeclare so no problems running function
 void waves(edict_t *self, int wave); //redeclare so no problems running function
-void waveLogic(edict_t *self);
+
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
+
 
 void SP_misc_teleporter_dest (edict_t *ent);
 
@@ -1359,7 +1360,7 @@ void ClientBegin (edict_t *ent)
 		ent->nextthink = level.time + 0.1;
 		needMapChange = 0;
 		ent->nextthink = level.time + 0.1;
-		gi.centerprintf(ent, "Beginning wave 1\n");
+		gi.centerprintf(ent, "Starting game...\n");
 		level.wave_number = 1;
 		waves(ent, 1);
 	}
@@ -1715,43 +1716,43 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			level.total_monsters -= level.killed_monsters; //get rid of enemies that were killed in past waves
 			level.killed_monsters = 0;
 			level.wave_number++;
-			ent->nextthink = level.time + 10;
-			gi.centerprintf(ent, "%s\n", "Wave cleared!");
-			ent->nextthink = level.time + 10;
-			gi.centerprintf(ent, "Beginning wave %d.\n", level.wave_number);
-			ent->nextthink = level.time + 100;
+			switch(level.wave_number)
+			{
+				case 1:
+					gi.centerprintf(ent, "Beginning wave %d.\n", level.wave_number);
+					break;
+				case 5:
+					skill->value = 1; //increase difficulty
+					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
+					if(ent->health <= 80)
+						ent->health += 20;
+					break;
+				case 10:
+					skill->value = 2; //increase difficulty
+					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
+					if(ent->health <= 70)
+						ent->health += 30;
+					ent->enemy->speed *= 1.25;
+					break;
+				case 15:
+					skill->value = 3; //increase difficulty
+					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
+					ent->health = 100; //you deserve it
+					ent->enemy->speed *= 1.5;
+					ent->enemy->health *= 1.25;
+					break;
+				case 20:
+					skill->value = 4; //increase difficulty
+					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
+					ent->health = 100; //you deserve more
+					ent->enemy->speed *= 2;
+					ent->enemy->health *= 1.5;
+					break;
+				default:
+					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\n", level.wave_number);
+					break;
+			}
 			waves(ent, level.wave_number);
-			if(level.wave_number == 5)
-			{
-				skill->value = 1; //increase difficulty
-				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
-				if(ent->health <= 80)
-					ent->health += 20;
-			}
-			else if(level.wave_number == 10)
-			{
-				skill->value = 2; //increase difficulty
-				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
-				if(ent->health <= 70)
-					ent->health += 30;
-				ent->enemy->speed *= 1.25;
-			}
-			else if(level.wave_number == 15)
-			{
-				skill->value = 3; //increase difficulty
-				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
-				ent->health = 100; //you deserve it
-				ent->enemy->speed *= 1.5;
-				ent->enemy->health *= 1.25;
-			}
-			else if(level.wave_number == 20)
-			{
-				skill->value = 4; //increase difficulty
-				gi.centerprintf(ent, "%s\n", "Difficulty Increased!");
-				ent->health = 100; //you deserve more
-				ent->enemy->speed *= 2;
-				ent->enemy->health *= 1.5;
-			}
 		}
 
 	}

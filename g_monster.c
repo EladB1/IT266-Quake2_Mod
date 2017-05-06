@@ -15,6 +15,7 @@ vec3_t used_spawn_points[10]; //make sure a spawn point isn't used twice unless 
 void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod);
 
 void soldier_walk1_random (edict_t *self);
+mmove_t soldier_move_walk1;
 
 void SP_monster_soldier_light (edict_t *self); //redefine this up here so waves can use it properly
 
@@ -738,7 +739,19 @@ void swimmonster_start (edict_t *self)
 	monster_start (self);
 }
 //mod: spawn monsters in waves
-void set_spawn_points (){ //spawn_points is a global variable at the start of the file
+char entity_in_position(edict_t* self, vec3_t spawn_point)
+{
+	char in_pos = 0;
+	/*if(self->enemy->s.old_origin[0] == spawn_point[0] && self->enemy->s.old_origin[1] == spawn_point[1] && self->enemy->s.old_origin[2] == spawn_point[2])
+		in_pos = 1;
+	else*/ 
+	if(self->s.origin[0] == spawn_point[0] && self->s.origin[1] == spawn_point[1] && self->s.origin[2] == spawn_point[2])
+		in_pos = 1;
+	return in_pos;
+
+}
+void set_spawn_points ()
+{ //spawn_points is a global variable at the start of the file
 	VectorSet(spawn_points[0], 1653.625, 330.25, 550);
 	VectorSet(spawn_points[1], 858.375, 1402.875, 800);
 	VectorSet(spawn_points[2], 1797.625, 1187.125, 1048.125);
@@ -757,12 +770,24 @@ void spawn_enemy(edict_t *self, int spawn_point_index)
 	 if(spawn_point_index < 0 || spawn_point_index >= 10)
 		 return;
 	 VectorCopy(spawn_points[spawn_point_index], npc->s.origin);
+	 if(entity_in_position(npc, npc->s.origin))
+	 {
+		npc->s.origin[0] -= 20;
+		npc->s.origin[1] -= 20;
+	 }
+	 else if(entity_in_position(self, npc->s.origin))
+	 {
+		npc->s.origin[0] -= 10;
+		npc->s.origin[1] -= 10;
+	 }
 	 SP_monster_soldier_light(npc);
 	 gi.linkentity(npc);
+	 self->monsterinfo.pausetime = level.time + 2 * FRAMETIME;
 	 level.total_monsters--; //for some reason waves is giving the wrong number of total monsters (wasn't doing this before)
 	 
 	 walkmonster_start(npc); //make the enemies walk around
-	 self->monsterinfo.currentmove = &soldier_walk1_random;
+	 self->monsterinfo.currentmove = &soldier_move_walk1;
+	 //self->think = soldier_walk1_random;
 	 //gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
 }
 void waves(edict_t *self, int wave)
