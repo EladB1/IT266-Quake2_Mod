@@ -742,11 +742,12 @@ void swimmonster_start (edict_t *self)
 char entity_in_position(edict_t* self, vec3_t spawn_point)
 {
 	char in_pos = 0;
-	/*if(self->enemy->s.old_origin[0] == spawn_point[0] && self->enemy->s.old_origin[1] == spawn_point[1] && self->enemy->s.old_origin[2] == spawn_point[2])
-		in_pos = 1;
-	else*/ 
-	if(self->s.origin[0] == spawn_point[0] && self->s.origin[1] == spawn_point[1] && self->s.origin[2] == spawn_point[2])
-		in_pos = 1;
+	int i;
+	for(i = 0; i < globals.num_edicts; i++)
+	{
+		if(VectorCompare(g_edicts[i].s.origin, spawn_point))
+			in_pos = 1;
+	}
 	return in_pos;
 
 }
@@ -772,12 +773,12 @@ void spawn_enemy(edict_t *self, int spawn_point_index)
 	 VectorCopy(spawn_points[spawn_point_index], npc->s.origin);
 	 if(entity_in_position(npc, npc->s.origin))
 	 {
-		npc->s.origin[0] -= 20;
-		npc->s.origin[1] -= 20;
+		npc->s.origin[0] -= 50;
+		npc->s.origin[1] -= 50;
 	 }
 	 else if(entity_in_position(self, npc->s.origin))
 	 {
-		npc->s.origin[0] -= 10;
+		//npc->s.origin[0] -= 10;
 		npc->s.origin[1] -= 10;
 	 }
 	 SP_monster_soldier_light(npc);
