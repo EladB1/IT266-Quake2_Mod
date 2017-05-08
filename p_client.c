@@ -536,9 +536,9 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	if (self->health < -40)
 	{	// gib
 		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 4; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowClientHead (self, damage);
+		/*for (n= 0; n < 4; n++)
+			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);*/
+		//ThrowClientHead (self, damage);
 
 		self->takedamage = DAMAGE_NO;
 	}
@@ -1721,32 +1721,27 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				case 1:
 					gi.centerprintf(ent, "Beginning wave %d.\n", level.wave_number);
 					break;
-				case 5:
+				case 4:
 					skill->value = 1; //increase difficulty
 					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
 					if(ent->health <= 80)
 						ent->health += 20;
 					break;
-				case 10:
+				case 8:
 					skill->value = 2; //increase difficulty
 					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
 					if(ent->health <= 70)
 						ent->health += 30;
-					ent->enemy->speed *= 1.25;
 					break;
-				case 15:
+				case 12:
 					skill->value = 3; //increase difficulty
 					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
 					ent->health = 100; //you deserve it
-					ent->enemy->speed *= 1.5;
-					ent->enemy->health *= 1.25;
 					break;
-				case 20:
+				case 16:
 					skill->value = 4; //increase difficulty
 					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\nDifficulty Increased!", level.wave_number);
 					ent->health = 100; //you deserve more
-					ent->enemy->speed *= 2;
-					ent->enemy->health *= 1.5;
 					break;
 				default:
 					gi.centerprintf(ent, "Wave Cleared!\nBeginning wave %d.\n", level.wave_number);

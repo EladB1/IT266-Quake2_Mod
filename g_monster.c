@@ -10,12 +10,14 @@
 // and we can tighten or loosen based on skill.  We could muck with
 // the damages too, but I'm not sure that's such a good idea.
 
-vec3_t spawn_points[10];
-vec3_t used_spawn_points[10]; //make sure a spawn point isn't used twice unless all spawn points used
+vec3_t spawn_points[15];
+vec3_t used_spawn_points[15]; //make sure a spawn point isn't used twice unless all spawn points used
+int spawn_index;
 void melee(edict_t* self, vec3_t start, vec3_t aimdir, int reach, int damage, int kick, int mod);
 
 void soldier_walk1_random (edict_t *self);
 mmove_t soldier_move_walk1;
+void soldier_walk (edict_t *self);
 
 void SP_monster_soldier_light (edict_t *self); //redefine this up here so waves can use it properly
 
@@ -745,8 +747,11 @@ char entity_in_position(edict_t* self, vec3_t spawn_point)
 	int i;
 	for(i = 0; i < globals.num_edicts; i++)
 	{
-		if(VectorCompare(g_edicts[i].s.origin, spawn_point))
-			in_pos = 1;
+		if(&g_edicts[i] != &(*self))
+		{
+			if(VectorCompare(g_edicts[i].s.origin, spawn_point))
+				in_pos = 1;
+		}
 	}
 	return in_pos;
 
@@ -754,42 +759,43 @@ char entity_in_position(edict_t* self, vec3_t spawn_point)
 void set_spawn_points ()
 { //spawn_points is a global variable at the start of the file
 	VectorSet(spawn_points[0], 1653.625, 330.25, 550);
-	VectorSet(spawn_points[1], 858.375, 1402.875, 800);
-	VectorSet(spawn_points[2], 1797.625, 1187.125, 1048.125);
-	VectorSet(spawn_points[3], 42.5, 752.5, 472.25);
-	VectorSet(spawn_points[4], 1949.875, 874.5, 408.125);
-	VectorSet(spawn_points[5], 992.5, 520.625, 472.25);
-	VectorSet(spawn_points[6], 1172.75, 1698.5, 792.125);
-	VectorSet(spawn_points[7], 963.25, -39.75, 920.125);
-	VectorSet(spawn_points[8], 1998.75, 439.75, 408.125 );
-	VectorSet(spawn_points[9], 1097.375, 738.125, 352.125);
+	VectorSet(spawn_points[1], 1841.25, 547, 536.125);
+	VectorSet(spawn_points[2], 1850.875, 855, 436.5);
+	VectorSet(spawn_points[3], 764.375, 589.625, 792.125);
+	VectorSet(spawn_points[4], 1472.375, 1076.375, 920.25); 
+	VectorSet(spawn_points[5], 992.5, 520.625, 472.25); 
+	VectorSet(spawn_points[6], 2011.125, 309.625, 664.25); 
+	VectorSet(spawn_points[7], 1308.25, -189.375, 664.25); 
+	VectorSet(spawn_points[8], 1978.875, 355.125, 408.125); 
+	VectorSet(spawn_points[9], 781.25, 981.75, 792.125); 
+	VectorSet(spawn_points[10], 1021.75, 895.625, 472.125);
+	VectorSet(spawn_points[11], 1493.625, 975.375, 352.125);
+	VectorSet(spawn_points[12], 1651.25, 902.75, 472.25); 
+	VectorSet(spawn_points[13], 1333.75, 333.875, 664.125);
+	VectorSet(spawn_points[14], 1788.625, 316.5, 536.25); 
+
 }
 void spawn_enemy(edict_t *self, int spawn_point_index)
 {
-	 edict_t* npc = G_Spawn();
+	 edict_t* targ, *npc = G_Spawn();
+	 vec3_t spawn_origin, spawn_angles;
 	 set_spawn_points(); //this must be called so the spawn_points vectors aren't all the zero vector
-	 if(spawn_point_index < 0 || spawn_point_index >= 10)
+	 if(spawn_point_index < 0 || spawn_point_index >= 15)
 		 return;
 	 VectorCopy(spawn_points[spawn_point_index], npc->s.origin);
 	 if(entity_in_position(npc, npc->s.origin))
 	 {
-		npc->s.origin[0] -= 50;
-		npc->s.origin[1] -= 50;
-	 }
-	 else if(entity_in_position(self, npc->s.origin))
-	 {
-		//npc->s.origin[0] -= 10;
-		npc->s.origin[1] -= 10;
+		srand(time(NULL));
+		npc->s.origin[0] -= rand() % 20 + 10;
+		npc->s.origin[1] -= rand() % 20 + 10;
 	 }
 	 SP_monster_soldier_light(npc);
+	 
 	 gi.linkentity(npc);
+	 
 	 self->monsterinfo.pausetime = level.time + 2 * FRAMETIME;
 	 level.total_monsters--; //for some reason waves is giving the wrong number of total monsters (wasn't doing this before)
-	 
-	 walkmonster_start(npc); //make the enemies walk around
-	 self->monsterinfo.currentmove = &soldier_move_walk1;
-	 //self->think = soldier_walk1_random;
-	 //gi.dprintf("Enemy spawned at: %f, %f, %f\n", npc->s.origin[0], npc->s.origin[1], npc->s.origin[2]);
+	 walkmonster_start(npc);
 }
 void waves(edict_t *self, int wave)
 {
@@ -798,11 +804,12 @@ void waves(edict_t *self, int wave)
 	srand(time(NULL));
 	for(i = 0; i < wave; ++i)
 	{
-		index = rand() % 10; //randomize
+		index = rand() % 15; //randomize
 		spawn_enemy(self, index);
 		self->nextthink = level.time + 0.01;
 	}
 }
+
 void init_game_mode(edict_t *self)
 {
 	skill->value = 0; //update skill->value to change difficulty of waves
